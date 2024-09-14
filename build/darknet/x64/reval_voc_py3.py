@@ -67,7 +67,7 @@ def do_python_eval(devkit_path, year, image_set, classes, output_dir = 'results'
     for i, cls in enumerate(classes):
         if cls == '__background__':
             continue
-        filename = get_voc_results_file_template(image_set).format(cls)
+        filename = get_voc_results_file_template(image_set, output_dir).format(cls)
         rec, prec, ap = voc_eval(
             filename, annopath, imagesetfile, cls, cachedir, ovthresh=0.5,
             use_07_metric=use_07_metric)

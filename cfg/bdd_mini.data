@@ -1,0 +1,7 @@
+classes= 10
+train  = /home/ec2-user/bdd_train_balanced.txt
+valid  = /home/ec2-user/bdd_val.txt
+names = data/bdd.names
+backup = backup_bdd
+results=results
+eval=coco

@@ -358,10 +358,9 @@ static int get_coco_image_id(char *filename)
     return atoi(p + 1);
 }
 
-static void print_cocos(FILE *fp, char *image_path, detection *dets, int num_boxes, int classes, int w, int h)
+static void print_cocos(FILE *fp, char *image_id, detection *dets, int num_boxes, int classes, int w, int h)
 {
     int i, j;
-    int image_id = get_coco_image_id(image_path);
     for (i = 0; i < num_boxes; ++i) {
         float xmin = dets[i].bbox.x - dets[i].bbox.w / 2.;
         float xmax = dets[i].bbox.x + dets[i].bbox.w / 2.;
@@ -379,7 +378,7 @@ static void print_cocos(FILE *fp, char *image_path, detection *dets, int num_box
         float bh = ymax - ymin;
 
         for (j = 0; j < classes; ++j) {
-            if (dets[i].prob[j]) fprintf(fp, "{\"image_id\":%d, \"category_id\":%d, \"bbox\":[%f, %f, %f, %f], \"score\":%f},\n", image_id, coco_ids[j], bx, by, bw, bh, dets[i].prob[j]);
+            if (dets[i].prob[j]) fprintf(fp, "{\"image_id\":\"%s\", \"category_id\":%d, \"bbox\":[%f, %f, %f, %f], \"score\":%f},\n", image_id, coco_ids[j], bx, by, bw, bh, dets[i].prob[j]);
         }
     }
 }
@@ -537,7 +536,7 @@ void validate_detector(char *datacfg, char *cfgfile, char *weightfile, char *out
             detection *dets = get_network_boxes(&net, w, h, thresh, .5, map, 0, &nboxes, letterbox);
             if (nms) do_nms_sort(dets, nboxes, classes, nms);
             if (coco) {
-                print_cocos(fp, path, dets, nboxes, classes, w, h);
+                print_cocos(fp, id, dets, nboxes, classes, w, h);
             }
             else if (imagenet) {
                 print_imagenet_detections(fp, i + t - nthreads + 1, dets, nboxes, classes, w, h);
